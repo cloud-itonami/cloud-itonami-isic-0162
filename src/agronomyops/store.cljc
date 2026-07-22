@@ -30,10 +30,9 @@
   query over an immutable log -- the audit trail a smallholder or
   cooperative trusting an agronomy operator needs, and the evidence an
   operator needs if a sample or a treatment is later disputed."
-  (:require #?(:clj  [clojure.edn :as edn]
-               :cljs [cljs.reader :as edn])
-            [agronomyops.registry :as registry]
-            [langchain.db :as d]))
+  (:require [agronomyops.registry :as registry]
+            [langchain.db :as d]
+            [langchain-store.core :as ls]))
 
 (defprotocol Store
   (visit [s id])
@@ -194,9 +193,6 @@
    :sample-sequence/jurisdiction    {:db/unique :db.unique/identity}
    :treatment-sequence/jurisdiction {:db/unique :db.unique/identity}})
 
-(defn- enc [v] (pr-str v))
-(defn- dec* [s] (when s (edn/read-string s)))
-
 (defn- visit->tx [{:keys [id farm crop area label-rate claimed-dose
                           approved-for-crop?
                           near-water-source? buffer-compliant?
@@ -244,21 +240,21 @@
          (map #(pull->visit (d/pull (d/db conn) visit-pull [:visit/id %])))
          (sort-by :id)))
   (assessment-of [_ visit-id]
-    (dec* (d/q '[:find ?p . :in $ ?vid
+    (ls/dec* (d/q '[:find ?p . :in $ ?vid
                 :where [?a :assessment/visit-id ?vid] [?a :assessment/payload ?p]]
               (d/db conn) visit-id)))
   (ledger [_]
     (->> (d/q '[:find ?s ?f :where [?e :ledger/seq ?s] [?e :ledger/fact ?f]] (d/db conn))
          (sort-by first)
-         (mapv (comp dec* second))))
+         (mapv (comp ls/dec* second))))
   (sample-history [_]
     (->> (d/q '[:find ?s ?r :where [?e :sample-record/seq ?s] [?e :sample-record/record ?r]] (d/db conn))
          (sort-by first)
-         (mapv (comp dec* second))))
+         (mapv (comp ls/dec* second))))
   (treatment-history [_]
     (->> (d/q '[:find ?s ?r :where [?e :treatment-record/seq ?s] [?e :treatment-record/record ?r]] (d/db conn))
          (sort-by first)
-         (mapv (comp dec* second))))
+         (mapv (comp ls/dec* second))))
   (next-sample-sequence [_ jurisdiction]
     (or (d/q '[:find ?n . :in $ ?j
               :where [?e :sample-sequence/jurisdiction ?j] [?e :sample-sequence/next ?n]]
@@ -279,7 +275,7 @@
       (d/transact! conn [(visit->tx value)])
 
       :assessment/set
-      (d/transact! conn [{:assessment/visit-id (first path) :assessment/payload (enc payload)}])
+      (d/transact! conn [{:assessment/visit-id (first path) :assessment/payload (ls/enc payload)}])
 
       :visit/mark-sampled
       (let [visit-id (first path)
@@ -289,7 +285,7 @@
         (d/transact! conn
                      [(visit->tx (assoc visit-patch :id visit-id))
                       {:sample-sequence/jurisdiction jurisdiction :sample-sequence/next next-n}
-                      {:sample-record/seq (count (sample-history s)) :sample-record/record (enc (get result "record"))}])
+                      {:sample-record/seq (count (sample-history s)) :sample-record/record (ls/enc (get result "record"))}])
         result)
 
       :visit/mark-treated
@@ -300,12 +296,12 @@
         (d/transact! conn
                      [(visit->tx (assoc visit-patch :id visit-id))
                       {:treatment-sequence/jurisdiction jurisdiction :treatment-sequence/next next-n}
-                      {:treatment-record/seq (count (treatment-history s)) :treatment-record/record (enc (get result "record"))}])
+                      {:treatment-record/seq (count (treatment-history s)) :treatment-record/record (ls/enc (get result "record"))}])
         result)
       nil)
     s)
   (append-ledger! [s fact]
-    (d/transact! conn [{:ledger/seq (count (ledger s)) :ledger/fact (enc fact)}])
+    (d/transact! conn [{:ledger/seq (count (ledger s)) :ledger/fact (ls/enc fact)}])
     fact)
   (with-visits [s visits]
     (when (seq visits) (d/transact! conn (mapv visit->tx (vals visits)))) s))
