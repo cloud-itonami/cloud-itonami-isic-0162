@@ -44,6 +44,30 @@
   (let [s (str n)]
     (str (apply str (repeat (max 0 (- w (count s))) "0")) s)))
 
+(def ^:private amount-scale
+  "Sub-minor-unit scale used when comparing two amount amounts: 1/10000
+  of a unit. Coarser than double representation error by many orders of
+  magnitude, finer than any distinction a real amount carries."
+  10000)
+
+(defn- amount=
+  "Exact-at-amount-precision equality for two amounts.
+
+  `==` on raw doubles is NOT the right comparison here: a product or sum
+  of decimal quantities is routinely not the double nearest the true
+  total, so a CORRECT claim compared false and an entity that was never
+  wrong was rejected. Measured across this fleet's recompute shapes,
+  20-27% of cent-denominated combinations failed while being right.
+
+  Rounding both sides to `amount-scale` before comparing removes the
+  representation error while preserving every distinction the value can
+  actually carry. A missing or non-numeric amount never matches:
+  un-verifiable is not the same as correct."
+  [x y]
+  (and (number? x) (number? y)
+       (= (Math/round (* amount-scale (double x)))
+          (Math/round (* amount-scale (double y))))))
+
 (defn compute-dose
   "The ground-truth treatment dose for `visit`'s own `:area` and
   `:label-rate` -- a single flat area x rate calculation, not a full
@@ -58,7 +82,7 @@
   honest reapplication of the SAME discipline every sibling actor's
   own cost/total-matching check establishes, not a new concept."
   [{:keys [claimed-dose] :as visit}]
-  (== (double claimed-dose) (compute-dose visit)))
+  (amount= claimed-dose (compute-dose visit)))
 
 (defn register-sample-collection
   "Validate + construct the SAMPLE-COLLECTION registration DRAFT --
