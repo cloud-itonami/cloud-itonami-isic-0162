@@ -1,16 +1,47 @@
-<html><head><meta charset="utf-8"><title>cloud-itonami · robotics</title><style>table { width: 100%; border-collapse: collapse; font-size: 14px; }
-.ok { color: #137a3f; }
-body { font-family: system-ui,-apple-system,sans-serif; margin: 0; color: #1a1a1a; background: #fafafa; }
-header.bar { display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: #fff; border-bottom: 1px solid #e5e5e5; }
-th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #f0f0f0; }
-h2 { margin-top: 0; font-size: 15px; }
-td.amt { font-variant-numeric: tabular-nums; text-align: right; }
-.warn { color: #b25c00; background: #fff8e1; padding: 2px 6px; border-radius: 4px; }
-main { max-width: 980px; margin: 24px auto; padding: 0 20px; }
-header.bar h1 { font-size: 18px; margin: 0; font-weight: 600; }
-.muted { color: #888; }
-.critical { color: #fff; background: #b3261e; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
-.card { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-.err { color: #b3261e; background: #fbe9e7; padding: 2px 6px; border-radius: 4px; }
-th { font-weight: 600; color: #555; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
-header.bar .badge { margin-left: auto; font-size: 12px; color: #666; }</style></head><body><header class="bar"><h1>Robotics Safety — Operator Console</h1><span class="badge">read-only · governor-gated · never dispatches</span></header><main><section class="card"><h2>Missions</h2><table><thead><tr><th>Mission</th><th>Robot</th><th>Objective</th><th>Status</th></tr></thead><tbody><tr><td>M1</td><td>robot-1</td><td>deliver parcel</td><td>planned</td></tr></tbody></table></section><section class="card"><h2>Action gate</h2><p class="muted">allowed safety classes: low, medium, none, safety-critical</p><table><thead><tr><th>Action</th><th>Kind</th><th>Safety</th><th>Gate</th></tr></thead><tbody><tr><td>A1</td><td>move</td><td class="ok">low</td><td><span class="ok">permit</span></td></tr><tr><td>A2</td><td>grasp</td><td class="critical">safety-critical</td><td><span class="warn">sign-off · safety-critical</span></td></tr></tbody></table></section></main></body></html>
+<html><head><meta charset="utf-8"><title>cloud-itonami-isic-0162 &middot; agronomy field ops</title><style>body{font:14px/1.5 -apple-system,system-ui,sans-serif;margin:0;color:#1a1a1a;background:#f5f5f5}.bar{background:#1a3a2a;color:#fff;padding:1.2rem 2rem}.bar h1{margin:0;font-size:1.15rem;font-weight:600}.badge{display:inline-block;margin-top:.4rem;font-size:.75rem;opacity:.8}main{max-width:980px;margin:1.5rem auto;padding:0 1rem}.card{background:#fff;border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:1.2rem;box-shadow:0 1px 3px rgba(0,0,0,.08)}.card h2{margin-top:0;font-size:1rem}.muted{color:#777;font-size:.82rem}table{border-collapse:collapse;width:100%;font-size:.85rem}th,td{text-align:left;padding:.42rem .5rem;border-bottom:1px solid #eee}th{font-weight:600;color:#555}.ok{color:#0a7d33}.warn{color:#9a6700}.critical{color:#b41010;font-weight:600}code{background:#f0f0f0;padding:.1rem .3rem;border-radius:3px;font-size:.8rem}</style></head><body>
+<header class="bar">
+  <h1>Agronomy field ops (ISIC 0162) — Operator Console</h1>
+  <span class="badge">read-only sample · governor-gated · jurisdiction/sample/treatment always human-approved · dose-recompute + product + water-buffer checks</span>
+</header>
+<main>
+  <section class="card">
+    <h2>Scenario visits</h2>
+    <p class="muted">Demo snapshot — build-time-generated from <code>agronomyops.store</code> via <code>agronomyops.render-html</code> (<code>clojure -M:dev:render-html</code>), regenerated nightly. No invented data.</p>
+    <table>
+      <thead><tr><th>Visit</th><th>Farm</th><th>Last op status</th></tr></thead>
+      <tbody>
+        <tr><td>visit-1</td><td>Kita Farm</td><td><span class="critical">HARD hold &middot; already-sampled</span></td></tr>
+        <tr><td>visit-2</td><td>Atlantis Farm</td><td><span class="critical">HARD hold &middot; no-spec-basis</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="card">
+    <h2>Action gate (Agronomy Governor)</h2>
+    <p class="muted">HARD holds cannot be overridden. Treatment doses are independently recomputed (never trusted from the proposal); products must be approved for the crop; water-source buffer compliance is verified.</p>
+    <table>
+      <thead><tr><th>Op</th><th>Gate</th></tr></thead>
+      <tbody>
+        <tr><td><code>:visit/intake</code></td><td><span class="ok">auto-commit when clean</span></td></tr>
+        <tr><td><code>:jurisdiction/assess</code></td><td><span class="warn">ALWAYS human approval; spec-basis required</span></td></tr>
+        <tr><td><code>:sample/collect</code></td><td><span class="warn">ALWAYS human approval; double-sampling HARD-blocked</span></td></tr>
+        <tr><td><code>:treatment/apply</code></td><td><span class="warn">ALWAYS human approval; dose recompute + product/ water-buffer checks</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+  <section class="card">
+    <h2>Audit ledger (this run)</h2>
+    <p class="muted">Append-only decision-fact log — every proposal, hold and commit this scenario produced.</p>
+    <table>
+      <thead><tr><th>Fact</th><th>Op</th><th>Subject</th><th>Basis</th></tr></thead>
+      <tbody>
+        <tr><td>committed</td><td><code>intake</code></td><td>visit-1</td><td>id, farm</td></tr>
+        <tr><td>committed</td><td><code>assess</code></td><td>visit-1</td><td>農薬取締法 (Agricultural Chemicals Regulation Act), https://www.maff.go.jp/j/nouyaku/</td></tr>
+        <tr><td>committed</td><td><code>collect</code></td><td>visit-1</td><td>visit-1</td></tr>
+        <tr><td>committed</td><td><code>apply</code></td><td>visit-1</td><td>visit-1</td></tr>
+        <tr><td>governor-hold</td><td><code>assess</code></td><td>visit-2</td><td>no-spec-basis</td></tr>
+        <tr><td>governor-hold</td><td><code>collect</code></td><td>visit-1</td><td>already-sampled</td></tr>
+      </tbody>
+    </table>
+  </section>
+</main>
+</body></html>
