@@ -26,7 +26,7 @@
   a treatment itself (that is `agronomyops.operation`'s `:sample/
   collect`/`:treatment/apply`, always human-gated -- see README
   `Actuation`)."
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 (defn- unsigned-certificate
   "Every certificate this actor produces is UNSIGNED -- signature is
@@ -99,7 +99,7 @@
     (throw (ex-info "sample-collection: jurisdiction required" {})))
   (when (< sequence 0)
     (throw (ex-info "sample-collection: sequence must be >= 0" {})))
-  (let [sample-number (str (str/upper-case jurisdiction) "-SPL-" (zero-pad sequence 6))
+  (let [sample-number (str (str/upper jurisdiction) "-SPL-" (zero-pad sequence 6))
         record {"record_id" sample-number
                 "kind" "sample-collection-draft"
                 "visit_id" visit-id
@@ -124,7 +124,7 @@
     (throw (ex-info "treatment-application: jurisdiction required" {})))
   (when (< sequence 0)
     (throw (ex-info "treatment-application: sequence must be >= 0" {})))
-  (let [treatment-number (str (str/upper-case jurisdiction) "-TRT-" (zero-pad sequence 6))
+  (let [treatment-number (str (str/upper jurisdiction) "-TRT-" (zero-pad sequence 6))
         record {"record_id" treatment-number
                 "kind" "treatment-application-draft"
                 "visit_id" visit-id
