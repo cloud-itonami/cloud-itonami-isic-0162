@@ -181,7 +181,7 @@ collecting a sample or auto-applying a treatment).
 - `MemStore` ‖ `DatomicStore` parity is proven by
   `test/agronomyops/store_contract_test.cljk`.
 - 39 tests / 176 assertions pass; lint is clean; the demo
-  (`clojure -M:dev:run`) walks two clean sample+treatment lifecycles
+  (`kbb -M:dev:run`) walks two clean sample+treatment lifecycles
   (no-water-source, near-water-source-buffer-compliant), plus four
   HARD-hold scenarios, end-to-end.
 - `blueprint.edn` needed a genuine field-sync fix this time (a missing
