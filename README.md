@@ -65,7 +65,7 @@ enforce this (`agronomyops.governor`'s `:actuation/collect-sample`/
 `:actuation/apply-treatment` high-stakes gate and `agronomyops.
 phase`'s phase table, which never puts either op in any phase's
 `:auto` set) -- see `agronomyops.phase`'s docstring and
-`test/agronomyops/phase_test.clj`'s `sample-collect-never-auto-at-any-
+`test/agronomyops/phase_test.cljk`'s `sample-collect-never-auto-at-any-
 phase`/`treatment-apply-never-auto-at-any-phase`. The actor may draft,
 check and recommend; a human agronomy operator is always the one who
 actually collects a sample or applies a treatment. Grounded directly
@@ -162,14 +162,14 @@ investigated-and-ruled-out precedent).
 
 | File | Role |
 |---|---|
-| `src/agronomyops/store.cljc` | **Store** protocol -- `MemStore` ‖ `DatomicStore` (`langchain.db`) + append-only audit ledger + sample AND treatment history (dual history). The double-actuation guard checks dedicated `:sampled?`/`:treated?` booleans rather than a `:status` value |
-| `src/agronomyops/registry.cljc` | Sample/treatment draft records, plus `dose-matches-claim?` -- an honest reapplication of the SAME ground-truth-recompute discipline every sibling actor's own cost/total-matching check establishes |
-| `src/agronomyops/facts.cljc` | Per-jurisdiction agrochemical-registration AND water-buffer-zone catalog with an official spec-basis citation per entry, honest coverage reporting -- ALL FOUR seeded jurisdictions have a buffer-zone sub-citation here |
-| `src/agronomyops/agronomyopsllm.cljc` | **AgronomyOps-LLM** -- `mock-advisor` ‖ `llm-advisor`; intake/jurisdiction-assessment/sample/treatment proposals |
-| `src/agronomyops/governor.cljc` | **Agronomy Governor** -- 5 HARD checks (spec-basis · evidence-incomplete · treatment-dose-mismatch · treatment-product-unapproved, FLAGSHIP NEW, the 78th unconditional-evaluation-discipline grounding · water-source-buffer-violation, CONDITIONAL, the 79th grounding) + 2 double-actuation guards + 1 soft (confidence/actuation gate) |
-| `src/agronomyops/phase.cljc` | **Phase 0→3** -- read-only → assisted intake → assisted assess → supervised (sample/treatment always human; visit intake is the ONLY auto-eligible op, no direct field risk) |
-| `src/agronomyops/operation.cljc` | **OperationActor** -- langgraph StateGraph |
-| `src/agronomyops/sim.cljc` | demo driver |
+| `src/agronomyops/store.cljk` | **Store** protocol -- `MemStore` ‖ `DatomicStore` (`langchain.db`) + append-only audit ledger + sample AND treatment history (dual history). The double-actuation guard checks dedicated `:sampled?`/`:treated?` booleans rather than a `:status` value |
+| `src/agronomyops/registry.cljk` | Sample/treatment draft records, plus `dose-matches-claim?` -- an honest reapplication of the SAME ground-truth-recompute discipline every sibling actor's own cost/total-matching check establishes |
+| `src/agronomyops/facts.cljk` | Per-jurisdiction agrochemical-registration AND water-buffer-zone catalog with an official spec-basis citation per entry, honest coverage reporting -- ALL FOUR seeded jurisdictions have a buffer-zone sub-citation here |
+| `src/agronomyops/agronomyopsllm.cljk` | **AgronomyOps-LLM** -- `mock-advisor` ‖ `llm-advisor`; intake/jurisdiction-assessment/sample/treatment proposals |
+| `src/agronomyops/governor.cljk` | **Agronomy Governor** -- 5 HARD checks (spec-basis · evidence-incomplete · treatment-dose-mismatch · treatment-product-unapproved, FLAGSHIP NEW, the 78th unconditional-evaluation-discipline grounding · water-source-buffer-violation, CONDITIONAL, the 79th grounding) + 2 double-actuation guards + 1 soft (confidence/actuation gate) |
+| `src/agronomyops/phase.cljk` | **Phase 0→3** -- read-only → assisted intake → assisted assess → supervised (sample/treatment always human; visit intake is the ONLY auto-eligible op, no direct field risk) |
+| `src/agronomyops/operation.cljk` | **OperationActor** -- langgraph StateGraph |
+| `src/agronomyops/sim.cljk` | demo driver |
 | `test/agronomyops/*_test.clj` | governor contract · phase invariants · store parity · registry conformance · facts coverage |
 
 ## Business-process coverage (honest)
