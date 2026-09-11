@@ -1,5 +1,5 @@
 (ns agronomyops.sim
-  "Demo driver -- `clojure -M:dev:run`. Walks a clean visit through
+  "Demo driver -- `kbb -M:dev:run`. Walks a clean visit through
   intake -> jurisdiction assessment -> sample collection (escalate/
   approve/commit) -> treatment application (escalate/approve/commit),
   then a SEPARATE clean near-water-source visit through the same
