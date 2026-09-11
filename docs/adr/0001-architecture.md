@@ -125,7 +125,7 @@ real status-lifecycle bug (ADR-2607071320).
 `agronomyops.store/Store` is implemented by both `MemStore` (atom-
 backed, default for dev/tests/demo) and `DatomicStore` (`langchain.
 db`-backed), proven to satisfy the same contract in
-`test/agronomyops/store_contract_test.clj`.
+`test/agronomyops/store_contract_test.cljk`.
 
 ### Decision 9: no bespoke domain capability lib; one genuine `blueprint.edn` field-sync gap found and fixed
 
@@ -179,7 +179,7 @@ collecting a sample or auto-applying a treatment).
   application overall) and `water-source-buffer-violation?` (79th
   distinct application overall, the NINTH conditional variant).
 - `MemStore` ‖ `DatomicStore` parity is proven by
-  `test/agronomyops/store_contract_test.clj`.
+  `test/agronomyops/store_contract_test.cljk`.
 - 39 tests / 176 assertions pass; lint is clean; the demo
   (`clojure -M:dev:run`) walks two clean sample+treatment lifecycles
   (no-water-source, near-water-source-buffer-compliant), plus four
