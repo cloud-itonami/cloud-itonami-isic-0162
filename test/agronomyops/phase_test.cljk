@@ -2,7 +2,7 @@
   "The phase table as executable tests. The invariant this repo cannot
   regress on: `:sample/collect`/`:treatment/apply` must NEVER be a
   member of any phase's `:auto` set."
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [agronomyops.phase :as phase]))
 
 (deftest sample-collect-never-auto-at-any-phase
