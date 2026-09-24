@@ -1,5 +1,5 @@
 (ns agronomyops.registry-test
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kotoba.test :refer [deftest is]]
             [agronomyops.registry :as r]))
 
 ;; ----------------------------- dose-matches-claim? -----------------------------
