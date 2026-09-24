@@ -1,0 +1,31 @@
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-0162"
+ :cases
+ [{:id :field-scouting-run
+   :kind :transport
+   :procedure "field robot drives a scouting/sampling pass up a headland slope between crop rows, carrying soil and leaf samples"
+   :params {:mass-kg 220.0 :payload-kg 40.0 :distance-m 150.0 :v-max-mps 1.2 :a-max-mps2 0.4
+            :brake-decel-mps2 0.6 :drive-force-n 700.0 :crr 0.08
+            :cog-height-m 0.60 :support-half-length-m 0.55 :max-time-s 3000.0}
+   :sweep {:param :slope-deg :values [0.0 4.0 8.0 12.0 16.0]}
+   :quantity :cycle-time-s
+   :limit {:max 180.0 :basis "estimate: one 150 m scouting leg must fit a ~3-minute slot so a 20-point sampling plan finishes inside a morning spray-free window"}
+   :boundary {:lo 0.0 :hi 25.0}}
+  {:id :spot-spray-line
+   :kind :pipe-flow
+   :procedure "targeted-treatment pump pushes spray mix through the boom hose to the nozzle manifold"
+   :params {:diameter-m 0.013 :length-m 6.0 :roughness-m 1.5e-6
+            :density-kg-m3 1000.0 :viscosity-pa-s 1.0e-3 :pump-efficiency 0.5 :elevation-m 0.5}
+   :sweep {:param :q-m3s :values [5.0e-5 1.0e-4 2.0e-4 3.0e-4 4.0e-4]}
+   :quantity :pressure-drop-pa
+   :limit {:max 100000.0 :basis "estimate: keep hose loss under ~1 bar so a 2-3 bar flat-fan nozzle still sees its rated pressure from a small diaphragm pump"}
+   :boundary {:lo 1.0e-5 :hi 1.0e-3}}
+  {:id :soil-core-to-bin
+   :kind :manipulator
+   :procedure "arm lifts a soil-core sample bag from the probe to the on-board sample rack"
+   :params {:l1-m 0.50 :l2-m 0.45 :m1-kg 4.0 :m2-kg 3.0
+            :from [0.60 -0.30] :to [0.25 0.45] :duration-s 2.0 :steps 400}
+   :sweep {:param :payload-kg :values [0.5 1.0 2.0 3.0 5.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 80.0 :basis "estimate: continuous shoulder torque of a light field-rated arm (~5 kg payload class)"}
+   :boundary {:lo 0.1 :hi 20.0}}]}
